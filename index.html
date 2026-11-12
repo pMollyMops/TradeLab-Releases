@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TradeLab – Download</title>
-<meta name="description" content="TradeLab – Trading-Journal mit Risikomanagement vor dem Trade. Download für Windows, Anleitung und Demo.">
+<meta name="description" content="TradeLab – Trading-Journal mit Risikomanagement vor dem Trade. Download für Windows, macOS und Linux, Anleitung und Demo.">
 <link rel="icon" href="logo.png">
 <style>
   :root {
@@ -41,6 +41,12 @@
   .btn.secondary { background: transparent; color: var(--brand); }
   .btn.secondary:hover { background: var(--brand-soft); }
   .card .btn + .btn { margin-top: 8px; }
+  .alt { display: block; margin-top: 6px; font-size: .82rem; text-align: center; color: var(--brand); }
+  .tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+  .tabs button { border: 1px solid var(--border); background: var(--card); color: var(--muted);
+                 padding: 4px 12px; border-radius: 6px; cursor: pointer; font: inherit; font-size: .9rem; }
+  .tabs button[aria-pressed="true"] { color: var(--brand); border-color: var(--brand); font-weight: 600; }
+  code { font-size: .88em; background: var(--brand-soft); padding: 1px 5px; border-radius: 4px; }
   .note { margin-top: 10px; font-size: .82rem; color: var(--muted); text-align: center; }
   section { margin-top: 32px; }
   section h2 { font-size: 1.25rem; margin: 0 0 10px; }
@@ -59,10 +65,7 @@
 <body>
 <main>
   <header>
-    <picture>
-      <source srcset="logo-dark.png" media="(prefers-color-scheme: dark)">
-      <img src="logo.png" alt="">
-    </picture>
+    <img src="logo.png" alt="">
     <div>
       <h1>TradeLab</h1>
       <p class="tagline" data-i18n="tagline"></p>
@@ -81,15 +84,19 @@
       <p data-i18n="fullText"></p>
       <a class="btn" id="full-win" href="https://github.com/pMollyMops/TradeLab-Releases/releases/latest" data-i18n="winBtn"></a>
       <a class="btn secondary" id="full-mac" hidden data-i18n="macBtn"></a>
+      <a class="btn secondary" id="full-linux" hidden data-i18n="linuxBtn"></a>
+      <a class="alt" id="full-deb" hidden data-i18n="debLink"></a>
     </div>
     <div class="card">
       <h2 data-i18n="demoTitle"></h2>
       <p data-i18n="demoText"></p>
       <a class="btn secondary" id="demo-win" href="https://github.com/pMollyMops/TradeLab-Releases/releases/latest" data-i18n="winBtn"></a>
       <a class="btn secondary" id="demo-mac" hidden data-i18n="macBtn"></a>
+      <a class="btn secondary" id="demo-linux" hidden data-i18n="linuxBtn"></a>
+      <a class="alt" id="demo-deb" hidden data-i18n="debLink"></a>
     </div>
   </div>
-  <p class="note" id="mac-note" data-i18n="macSoon"></p>
+  <p class="note" id="soon-note" hidden></p>
 
   <section>
     <h2 data-i18n="docsTitle"></h2>
@@ -101,11 +108,23 @@
 
   <section>
     <h2 data-i18n="firstTitle"></h2>
-    <div class="box">
+    <div class="tabs" role="group" aria-label="System">
+      <button type="button" data-os="win">Windows</button>
+      <button type="button" data-os="linux">Linux</button>
+    </div>
+    <div class="box" data-os-box="win">
       <ol>
         <li data-i18n="first1"></li>
         <li data-i18n="first2"></li>
         <li data-i18n="first3"></li>
+      </ol>
+    </div>
+    <div class="box" data-os-box="linux" hidden>
+      <ol>
+        <li data-i18n-html="linux1"></li>
+        <li data-i18n-html="linux2"></li>
+        <li data-i18n-html="linux3"></li>
+        <li data-i18n-html="linux4"></li>
       </ol>
     </div>
   </section>
@@ -140,12 +159,18 @@ const T = {
     demoText: "Zum Ausprobieren: über 1.000 Beispiel-Trades sind schon drin. Max. 10 eigene neue Trades pro Monat.",
     winBtn: "⬇ Für Windows herunterladen",
     macBtn: "⬇ Für macOS herunterladen",
-    macSoon: "Die macOS-Version folgt in Kürze.",
+    linuxBtn: "⬇ Für Linux herunterladen (AppImage)",
+    debLink: "oder als .deb-Paket (Debian/Ubuntu, ohne Auto-Update)",
+    soon: (os) => `Die Version für ${os} folgt in Kürze.`,
     docsTitle: "Anleitung",
-    firstTitle: "Erster Start unter Windows",
+    firstTitle: "Erster Start",
     first1: "Die heruntergeladene Datei per Doppelklick starten – Administratorrechte sind nicht nötig.",
     first2: "Erscheint „Der Computer wurde durch Windows geschützt“: auf „Weitere Informationen“ und dann „Trotzdem ausführen“ klicken. Die Warnung kommt, weil die App (noch) kein kostenpflichtiges Herausgeber-Zertifikat hat.",
     first3: "Fertig – TradeLab startet über das Startmenü. Wie es weitergeht, steht in der Anleitung.",
+    linux1: "Die <b>AppImage</b> an einen festen Ort legen, z.B. <code>~/Programme</code> – von dort aus aktualisiert sie sich selbst.",
+    linux2: "Ausführbar machen: Rechtsklick → Eigenschaften → „Ausführbar“ anhaken, oder im Terminal <code>chmod +x TradeLab_*.AppImage</code>.",
+    linux3: "Per Doppelklick starten. Startet sie nicht, fehlt meist FUSE 2: Ubuntu/Debian <code>sudo apt install libfuse2</code> (ab Ubuntu 24.04 <code>libfuse2t64</code>), Fedora <code>sudo dnf install fuse-libs</code>, Arch <code>sudo pacman -S fuse2</code>.",
+    linux4: "Alternativ das <b>.deb-Paket</b> mit <code>sudo apt install ./TradeLab_*.deb</code> installieren – dann gibt es aber keine automatischen Updates, neue Versionen holst du hier.",
     factsTitle: "Gut zu wissen",
     fact1: "Updates kommen automatisch in der App – du musst nie wieder etwas herunterladen.",
     fact2: "Jedes Update ist digital signiert und wird vor der Installation geprüft; vorher legt die App eine Sicherung an.",
@@ -165,12 +190,18 @@ const T = {
     demoText: "To try it out: over 1,000 sample trades are already included. Max. 10 new trades of your own per month.",
     winBtn: "⬇ Download for Windows",
     macBtn: "⬇ Download for macOS",
-    macSoon: "The macOS version is coming soon.",
+    linuxBtn: "⬇ Download for Linux (AppImage)",
+    debLink: "or as a .deb package (Debian/Ubuntu, no auto-update)",
+    soon: (os) => `The ${os} version is coming soon.`,
     docsTitle: "Guide",
-    firstTitle: "First start on Windows",
+    firstTitle: "First start",
     first1: "Double-click the downloaded file – no administrator rights needed.",
     first2: "If “Windows protected your PC” appears: click “More info” and then “Run anyway”. The warning appears because the app does not (yet) have a paid publisher certificate.",
     first3: "Done – start TradeLab from the Start menu. The guide explains what comes next.",
+    linux1: "Put the <b>AppImage</b> in a permanent place, e.g. <code>~/Applications</code> – it updates itself from there.",
+    linux2: "Make it executable: right-click → Properties → tick “Executable”, or in a terminal <code>chmod +x TradeLab_*.AppImage</code>.",
+    linux3: "Double-click to start. If it does not start, FUSE 2 is usually missing: Ubuntu/Debian <code>sudo apt install libfuse2</code> (Ubuntu 24.04+ <code>libfuse2t64</code>), Fedora <code>sudo dnf install fuse-libs</code>, Arch <code>sudo pacman -S fuse2</code>.",
+    linux4: "Alternatively install the <b>.deb package</b> with <code>sudo apt install ./TradeLab_*.deb</code> – but then there are no automatic updates; get new versions here.",
     factsTitle: "Good to know",
     fact1: "Updates arrive automatically in the app – you never have to download anything again.",
     fact2: "Every update is digitally signed and verified before installing; the app makes a backup first.",
@@ -184,6 +215,8 @@ const T = {
 let lang = "de";
 try { lang = localStorage.getItem("tradelab.site.lang") || (navigator.language || "de").slice(0, 2); } catch {}
 if (!T[lang]) lang = "en";
+let os = /Linux|X11/.test(navigator.userAgent) && !/Android/.test(navigator.userAgent) ? "linux" : "win";
+let missing = [];
 let release = null;
 let failed = false;
 
@@ -194,6 +227,13 @@ function render() {
     const v = t[el.dataset.i18n];
     if (typeof v === "string") el.textContent = v;
   });
+  // Nur eigene, feste Texte aus T (kein Fremdinhalt) → innerHTML ist hier unbedenklich.
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t[el.dataset.i18nHtml]; });
+  document.querySelectorAll(".tabs button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.os === os)));
+  document.querySelectorAll("[data-os-box]").forEach((el) => { el.hidden = el.dataset.osBox !== os; });
+  const soon = document.getElementById("soon-note");
+  soon.hidden = !missing.length;
+  if (missing.length) soon.textContent = t.soon(missing.join(" / "));
   document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
   const ver = document.getElementById("version");
   if (release) {
@@ -217,6 +257,7 @@ document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("cli
   try { localStorage.setItem("tradelab.site.lang", lang); } catch {}
   render();
 }));
+document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => { os = b.dataset.os; render(); }));
 
 render();
 fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
@@ -228,7 +269,11 @@ fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
     link("demo-win", as, /^TradeLab-Demo_[\d.]+_x64-setup\.exe$/);
     const mac = link("full-mac", as, /^TradeLab_[\d.]+_(universal|aarch64|x64)\.dmg$/);
     link("demo-mac", as, /^TradeLab-Demo_[\d.]+_(universal|aarch64|x64)\.dmg$/);
-    document.getElementById("mac-note").hidden = mac;
+    const linux = link("full-linux", as, /^TradeLab_[\d.]+_amd64\.AppImage$/);
+    link("demo-linux", as, /^TradeLab-Demo_[\d.]+_amd64\.AppImage$/);
+    link("full-deb", as, /^TradeLab_[\d.]+_amd64\.deb$/);
+    link("demo-deb", as, /^TradeLab-Demo_[\d.]+_amd64\.deb$/);
+    missing = [mac ? null : "macOS", linux ? null : "Linux"].filter(Boolean);
     render();
   })
   .catch(() => { failed = true; render(); });
